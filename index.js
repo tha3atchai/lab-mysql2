@@ -56,7 +56,7 @@ const deleteTodo = (id) => {
     pool.query("DELETE FROM todos t WHERE t.id = ?", [id]);
 }; 
 
-app.use("/register", async(req, res) => {
+app.post("/register", async(req, res) => {
     const {username, password} = req.body;
     const targetUser = await getTargetUser(username);
     if(targetUser[0].length !== 0){
@@ -67,7 +67,7 @@ app.use("/register", async(req, res) => {
     };
 });
 
-app.use("/login", async(req, res) => {
+app.post("/login", async(req, res) => {
     const {username, password} = req.body;
     const targetUser = await getTargetUser(username);
     console.log(targetUser);
@@ -82,7 +82,7 @@ app.use("/login", async(req, res) => {
     };
 });
 
-app.use("/change-password/:id", async(req, res) => {
+app.put("/change-password/:id", async(req, res) => {
     const {password} = req.body;
     const id = targetId(req);
     const targetUser = await pool.query("SELECT * FROM users u WHERE u.id = ?", [id]);
@@ -94,19 +94,19 @@ app.use("/change-password/:id", async(req, res) => {
     };
 });
 
-app.use("/create-todos", async(req, res) => {
+app.post("/create-todos", async(req, res) => {
     const {title, completed, userId} = req.body;
     const newTodo = await createTodo(title, completed, userId);
     res.status(201).send(newTodo);
 });
 
-app.use("/get-todos", async(req, res) => {
+app.get("/get-todos", async(req, res) => {
     const {userId} = req.body;
     const targetTodo = await getTodo(userId);
     res.status(200).send(targetTodo[0]);
 });
 
-app.use("/delete-todos/:id", async(req, res) => {
+app.delete("/delete-todos/:id", async(req, res) => {
     const id = targetId(req);
     const targetUser = await pool.query("SELECT * FROM todos t WHERE t.id = ?", [id]);
     if(targetUser[0].length !== 0){
